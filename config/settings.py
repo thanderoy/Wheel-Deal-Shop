@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Local
     "apps.shop.apps.ShopConfig",
     "apps.cart.apps.CartConfig",
+    "apps.orders.apps.OrdersConfig",
 ]
 
 MIDDLEWARE = [
