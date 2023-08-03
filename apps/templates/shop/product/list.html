@@ -27,7 +27,7 @@
 
         <div class="row">
         {% for product in products %}
-            <div class="col-4 p-2" style="background-color:cadetblue;">
+            <div class="col-4 p-2 overflow-hidden" style="background-color:cadetblue;">
                 <a href="{{ product.get_absolute_url }}">
                     <img src="{% if product.image %} {{ product.image.url }} {% else %} {% static 'img/no_image.png' %} {% endif %}" alt="{{ product.name }} Image">
                 </a>

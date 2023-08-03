@@ -4,6 +4,7 @@ from apps.shop.models import Product
 
 
 class Order(BaseModel):
+    # TODO: Implelement Human-Readable random order numbers. Token-like?
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()

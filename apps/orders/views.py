@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import OrderItem
 from .forms import OrderCreateForm
-from cart.cart import Cart
+from apps.cart.cart import Cart
 
 
 def order_create(request):
@@ -11,7 +11,8 @@ def order_create(request):
         form = OrderCreateForm(request.POST)
         if form.is_valid():
             order = form.save()
-            for item in cart:
+            for item in iter(cart):
+                # TODO: Use BulkCreate instead?
                 OrderItem.objects.create(
                     order=order,
                     product=item.get("product"),
@@ -20,3 +21,15 @@ def order_create(request):
                 )
             # Clear cart after saving order.
             cart.clear()
+
+        context = {"order": order}
+        return render(request, "orders/order/created.html", context)
+
+    elif request.method == "GET":
+        form = OrderCreateForm()
+
+    context = {
+        "cart": cart,
+        "form": form
+    }
+    return render(request, "orders/order/create.html", context)
