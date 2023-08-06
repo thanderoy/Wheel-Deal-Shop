@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import OrderItem
 from .forms import OrderCreateForm
+from .tasks import order_created
 from apps.cart.cart import Cart
 
 
@@ -21,6 +22,9 @@ def order_create(request):
                 )
             # Clear cart after saving order.
             cart.clear()
+
+            # Send email on order creation
+            order_created.delay(order.id)
 
         context = {"order": order}
         return render(request, "orders/order/created.html", context)
