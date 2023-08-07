@@ -1,10 +1,13 @@
 from django.db import models
 from apps.common.models import BaseModel
 from apps.shop.models import Product
+from .utils import generate_order_no
 
 
 class Order(BaseModel):
-    # TODO: Implelement Human-Readable random order numbers. Token-like?
+    order_no = models.CharField(
+        max_length=5, unique=True, default=generate_order_no
+    )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
