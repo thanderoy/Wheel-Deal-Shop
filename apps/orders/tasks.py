@@ -15,7 +15,7 @@ def order_created(order_id):
     subject = SUBJECT_PREFIX + f"Order No. {order.order_no}"
     message = f"Dear {order.first_name}, \n\n" \
         f"You have successfully placed and order." \
-        f"Your order ID is {order.id}."
+        f"Your order ID is {order.order_no}."
     mail_sent = send_mail(
         subject,
         message,
