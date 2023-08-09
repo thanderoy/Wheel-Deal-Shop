@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 def order_payment(obj):
     url = obj.get_stripe_url()
     if obj.stripe_id:
-        html = f'<a href="{url}" target="_blank>{obj.stripe_id}</a>'
+        html = f'<a href="{url}" target="_blank">{obj.stripe_id}</a>'
         return mark_safe(html)
     return ''
 
@@ -23,7 +23,7 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
         "order_no", "first_name", "last_name", "email", "paid",
-        "order_payment", "created"
+        order_payment, "updated", "created"
     ]
     list_filter = ["paid", "created", "updated"]
     inlines = [OrderItemInline]
