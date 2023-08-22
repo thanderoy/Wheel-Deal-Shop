@@ -45,3 +45,11 @@ def order_create(request):
         "form": form
     }
     return render(request, "orders/order/create.html", context)
+
+
+@staff_member_required
+def admin_order_detail(request, order_no):
+    order = get_object_or_404(Order, order_no=order_no)
+
+    context = {"order": order}
+    return render(request, "admin/orders/order/detail.html", context)
