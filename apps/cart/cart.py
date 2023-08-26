@@ -17,10 +17,8 @@ class Cart:
     def __init__(self, request) -> None:
         """ Initialize cart object. """
         self.session = request.session
-        cart = self.session.get(settings.CART_SESSION_ID)
-        if not cart:
-            # If non-existent, create new.
-            cart = self.session[settings.CART_SESSION_ID] = {}
+        # Get existing session, if not default to empty dict.
+        cart = self.session.get(settings.CART_SESSION_ID, {})
         self.cart = cart
 
     def __iter__(self):
@@ -72,8 +70,8 @@ class Cart:
         self.save()
 
     def clear(self):
-        del self.session[settings.CART_SESSION_ID]
-        self.save()
+        cart = self.cart
+        cart.clear()
 
     def get_total_price(self):
         return sum(
