@@ -1,0 +1,33 @@
+name: Tests
+
+on:
+  push:
+    branches: '**'
+  pull_request:
+    branches: '**'
+
+# on: 
+#   schedule:
+#     - cron: '*/15 * * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install tox tox-gh-actions
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: Run Tox
+      run: tox

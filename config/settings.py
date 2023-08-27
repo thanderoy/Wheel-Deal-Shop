@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY", default=" ")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False)
@@ -97,11 +97,11 @@ DATABASES = {
     # },
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
+        "NAME": config("DB_NAME", default=" "),
+        "USER": config("DB_USER", default=" "),
+        "PASSWORD": config("DB_PASSWORD", default=" "),
+        "HOST": config("DB_HOST", default=" "),
+        "PORT": config("DB_PORT", default=" "),
     },
 }
 
@@ -153,16 +153,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CART_SESSION_ID = "cart"
 
 # Email Config
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_PORT = config('EMAIL_PORT')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_PORT = config('EMAIL_PORT', default='')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default='')
 
 # Stripe Config
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
-STRIPE_API_VERSION = config('STRIPE_API_VERSION')
-STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
+STRIPE_API_VERSION = config('STRIPE_API_VERSION', default='')
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",    # For front-end app
@@ -172,12 +172,12 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]    # For front-end app access
 
 # AWS Configs
-AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
-AWS_S3_SIGNATURE_VERSION = config("AWS_S3_SIGNATURE_VERSION")
-AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME")
-AWS_S3_FILE_OVERWRITE = config("AWS_S3_FILE_OVERWRITE")
-AWS_S3_VERITY = config("AWS_S3_VERITY")
-DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE")
-STATICFILES_STORAGE = config("DEFAULT_FILE_STORAGE")
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default=" ")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", default=" ")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", default=" ")
+AWS_S3_SIGNATURE_VERSION = config("AWS_S3_SIGNATURE_VERSION", default=" ")
+AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME", default=" ")
+AWS_S3_FILE_OVERWRITE = config("AWS_S3_FILE_OVERWRITE", default=" ")
+AWS_S3_VERITY = config("AWS_S3_VERITY", default=" ")
+DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", default=" ")
+STATICFILES_STORAGE = config("DEFAULT_FILE_STORAGE", default=" ")

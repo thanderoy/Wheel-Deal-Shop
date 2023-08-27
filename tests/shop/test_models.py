@@ -26,7 +26,7 @@ class CategoryTestCase(TestCase):
     def test_retrieve_category_by_name_or_slug(self):
         baker.make(Category, name='Test Category', slug='test-category')
         retrieved_by_name = Category.objects.get(name='Test Category')
-        retrieved_by_slug = Category.objects.get(slug='test-category')
+        retrieved_by_slug = Category.objects.get(slug='test-category') 
         assert retrieved_by_name == retrieved_by_slug
 
     def test_create_category_with_non_unique_slug(self):
