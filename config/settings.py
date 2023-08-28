@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY", default=" ")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False)
 
-ALLOWED_HOSTS = ["wheel-deal-shop.up.railway.app", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["wheel-deal-shop.up.railway.app", "localhost", "0.0.0.0"]
 
 # Application definition
 
@@ -169,7 +169,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",    # For back-end app
 ]
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]    # For front-end app access
+CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
 
 # AWS Configs
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default=" ")
