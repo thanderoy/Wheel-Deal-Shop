@@ -173,6 +173,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://wheel-deal-shop.up.railway.app/",
     "http://localhost/",
     "http://0.0.0.0/"
+
 ]
 
 # AWS Configs
