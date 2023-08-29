@@ -169,7 +169,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",    # For back-end app
 ]
 
-CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
+CSRF_TRUSTED_ORIGINS = [
+    "https://wheel-deal-shop.up.railway.app",
+    "http://localhost",
+    "http://0.0.0.0"
+]
 
 # AWS Configs
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default=" ")
