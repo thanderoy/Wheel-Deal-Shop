@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", default=" ")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ["wheel-deal-shop.up.railway.app", "localhost", "0.0.0.0"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=" ", cast=lambda v: [s.strip() for s in v.split(',')])   # noqa
 
 # Application definition
 
@@ -164,17 +164,8 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 STRIPE_API_VERSION = config('STRIPE_API_VERSION', default='')
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",    # For front-end app
-    "http://localhost:8000",    # For back-end app
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://wheel-deal-shop.up.railway.app/",
-    "http://localhost/",
-    "http://0.0.0.0/"
-
-]
+CORS_ALLOWED_ORIGINS = config("ALLOWED_ORIGINS", default=" ",  cast=lambda v: [s.strip() for s in v.split(',')])   # noqa
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 # AWS Configs
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default=" ")
