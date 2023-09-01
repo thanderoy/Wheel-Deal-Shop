@@ -159,6 +159,10 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_PORT = config('EMAIL_PORT', default='')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default='')
 
+SHOP_EMAIL_ADDRESS = config('SHOP_EMAIL_ADDRESS', default=' ')
+SUBJECT_PREFIX = '[WHEEL DEAL SHOP] '
+
+
 # Stripe Config
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 STRIPE_API_VERSION = config('STRIPE_API_VERSION', default='')

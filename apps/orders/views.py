@@ -1,10 +1,16 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import weasyprint
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse
-from .models import OrderItem, Order
-from .forms import OrderCreateForm
-from .tasks import order_created
+
 from apps.cart.cart import Cart
+
+from .forms import OrderCreateForm
+from .models import Order, OrderItem
+from .tasks import order_created
 
 
 def order_create(request):
@@ -53,3 +59,19 @@ def admin_order_detail(request, order_no):
 
     context = {"order": order}
     return render(request, "admin/orders/order/detail.html", context)
+
+
+@staff_member_required
+def admin_order_pdf(request, order_no):
+    order = get_object_or_404(Order, order_no=order_no)
+    html = render_to_string(
+        "orders/order/invoice_template.html",
+        {"order": order}
+    )
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = f"filename=WHEELDEALSHOP-order-{order.order_no}.pdf"    # noqa
+    weasyprint.HTML(string=html).write_pdf(
+        response,
+        stylesheets=[weasyprint.CSS(settings.STATIC_ROOT / 'css/pdf.css')]
+    )
+    return response
