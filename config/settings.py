@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY", default=" ")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=" ", cast=lambda v: [s.strip() for s in v.split(',')])   # noqa
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=" ", cast=lambda var: [str.strip() for str in var.split(',')])   # noqa
 
 # Application definition
 
@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "apps.shop.apps.ShopConfig",
     "apps.cart.apps.CartConfig",
     "apps.orders.apps.OrdersConfig",
-    "apps.payments.apps.PaymentsConfig"
+    "apps.payments.apps.PaymentsConfig",
+    "apps.coupons.apps.CouponsConfig",
 ]
 
 MIDDLEWARE = [
@@ -141,7 +142,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "apps/common/static"
 
 # Default primary key field type
@@ -164,7 +164,7 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 STRIPE_API_VERSION = config('STRIPE_API_VERSION', default='')
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
 
-CORS_ALLOWED_ORIGINS = config("ALLOWED_ORIGINS", default=" ",  cast=lambda v: [s.strip() for s in v.split(',')])   # noqa
+CORS_ALLOWED_ORIGINS = config("ALLOWED_ORIGINS", default=" ",  cast=lambda var: [str.strip() for str in var.split(',')])   # noqa
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 # AWS Configs
