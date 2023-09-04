@@ -19,7 +19,11 @@ def order_create(request):
 
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in iter(cart):
                 # TODO: Use BulkCreate instead?
                 OrderItem.objects.create(
@@ -43,7 +47,7 @@ def order_create(request):
         # context = {"order": order}
         # return render(request, "orders/order/created.html", context)
 
-    elif request.method == "GET":
+    else:
         form = OrderCreateForm()
 
     context = {

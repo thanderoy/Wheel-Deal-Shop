@@ -1,7 +1,11 @@
+from decimal import Decimal
+
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from apps.common.models import BaseModel
+from apps.coupons.models import Coupon
 from apps.shop.models import Product
 
 from .utils import generate_order_no
@@ -20,6 +24,16 @@ class Order(BaseModel):
     city = models.CharField(max_length=100)
     paid = models.BooleanField(default=False)
 
+    # Coupon Related - discount is preserved even if Coupon object is deleted.
+    coupon = models.ForeignKey(
+        Coupon, related_name="orders", null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
+    discount = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0
+    )
+
     class Meta:
         ordering = ["-created"]
         indexes = [
@@ -29,8 +43,18 @@ class Order(BaseModel):
     def __str__(self) -> str:
         return f"Order {self.id}"
 
-    def get_total_cost(self) -> int:
+    def get_total_cost_before_discount(self) -> int:
         return sum(item.get_cost() for item in self.items.all())
+
+    def get_discount(self) -> int:
+        total_cost = self.get_total_cost_before_discount()
+        if self.discount:
+            return total_cost * (self.discount / Decimal(100))
+        return Decimal(0)
+
+    def get_total_cost(self) -> int:
+        total_cost = self.get_total_cost_before_discount()
+        return total_cost - self.get_discount()
 
     def get_stripe_url(self):
         if not self.stripe_id:
