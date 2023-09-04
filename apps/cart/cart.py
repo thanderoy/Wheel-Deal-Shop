@@ -21,7 +21,9 @@ class Cart:
         """ Initialize cart object. """
         self.session = request.session
         # Get existing session, if not default to empty dict.
-        cart = self.session.get(settings.CART_SESSION_ID, {})
+        cart = self.session.get(settings.CART_SESSION_ID)
+        if not cart:
+            cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
         # Store currently applied coupon
