@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", default=" ")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=False)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=" ", cast=lambda var: [str.strip() for str in var.split(',')])   # noqa
 
@@ -92,18 +92,18 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    },
     # "default": {
-    #     "ENGINE": "django.db.backends.postgresql",
-    #     "NAME": config("DB_NAME", default=" "),
-    #     "USER": config("DB_USER", default=" "),
-    #     "PASSWORD": config("DB_PASSWORD", default=" "),
-    #     "HOST": config("DB_HOST", default=" "),
-    #     "PORT": config("DB_PORT", default=" "),
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": BASE_DIR / "db.sqlite3",
     # },
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DB_NAME", default=" "),
+        "USER": config("DB_USER", default=" "),
+        "PASSWORD": config("DB_PASSWORD", default=" "),
+        "HOST": config("DB_HOST", default=" "),
+        "PORT": config("DB_PORT", default=" "),
+    },
 }
 
 
