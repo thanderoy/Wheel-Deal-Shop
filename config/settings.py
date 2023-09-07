@@ -182,3 +182,8 @@ AWS_S3_FILE_OVERWRITE = config("AWS_S3_FILE_OVERWRITE", default=" ")
 AWS_S3_VERITY = config("AWS_S3_VERITY", default=" ")
 DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", default=" ")
 STATICFILES_STORAGE = config("DEFAULT_FILE_STORAGE", default=" ")
+
+# Redis Config
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
