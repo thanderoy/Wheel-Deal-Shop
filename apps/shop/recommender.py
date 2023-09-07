@@ -23,7 +23,7 @@ class Recommender:
             related product.
 
         params:id (uuid): Product ID
-        
+
         return:(str): Products's Redis key -> product:[id]:purchased_with
         """
         return f"product:{str(id)}:purchased_with"
