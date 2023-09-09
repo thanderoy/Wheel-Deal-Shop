@@ -1,65 +1,19 @@
 import uuid
+from decimal import Decimal
 
 import pytest
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.test import TestCase
 from model_bakery import baker
 
 from apps.shop.models import Category, Product
 
 
-class CategoryTestCase(TestCase):
+class TestProduct(TestCase):
 
-    def test_create_category_with_valid_name_and_slug(self):
-        baker.make(Category, name='Test Category', slug='test-category')
-        assert Category.objects.filter(
-            name='Test Category', slug='test-category'
-        ).exists()
-
-    def test_save_category_with_valid_name_and_slug(self):
-        category = baker.make(Category, name='Test Category', slug='test-category') # noqa
-        category.name = 'Updated Category'
-        category.save()
-        assert Category.objects.filter(
-            name='Updated Category', slug='test-category'
-        ).exists()
-
-    def test_retrieve_category_by_name_or_slug(self):
-        baker.make(Category, name='Test Category', slug='test-category')
-        retrieved_by_name = Category.objects.get(name='Test Category')
-        retrieved_by_slug = Category.objects.get(slug='test-category') 
-        assert retrieved_by_name == retrieved_by_slug
-
-    def test_create_category_with_non_unique_slug(self):
-        baker.make(Category, name='Category 1', slug='test-category')
-        with pytest.raises(Exception):
-            baker.make(Category, name='Category 2', slug='test-category')
-
-    def test_retrieve_nonexistent_category(self):
-        category_name = 'Nonexistent Category'
-        category_slug = 'nonexistent-category'
-        category = Category.objects.filter(name=category_name).first()
-        assert category is None
-
-        category = Category.objects.filter(slug=category_slug).first()
-        assert category is None
-
-    def test_retrieve_categories_ordered_by_creation_date(self):
-        # Create Category instances using baker.make
-        category1 = baker.make(Category, name='Cat 1', slug='cat-1')
-        category2 = baker.make(Category, name='Cat 2', slug='cat-2')
-        category3 = baker.make(Category, name='Cat 3', slug='cat-3')
-
-        # Retrieve all Category instances ordered by creation date
-        categories = Category.objects.order_by('-created')
-
-        # Check if the retrieved categories are in the correct order
-        self.assertEqual(categories[0], category3)
-        self.assertEqual(categories[1], category2)
-        self.assertEqual(categories[2], category1)
-
-
-class ProductTestCase(TestCase):
-    def test_create_product_with_all_fields(self):
+    # Tests that a product can be created with all required fields
+    def test_create_product_with_required_fields(self):
         category = baker.make(Category, name='Test Cat', slug='test-cat')
         product = baker.make(
             Product, category=category, name='Test Product',
@@ -69,93 +23,106 @@ class ProductTestCase(TestCase):
         assert product.slug == 'test-product'
         assert product.price == 10.99
 
-    def test_update_existing_product(self):
+    # Tests that a product can be created with optional fields
+    def test_create_product_with_optional_fields(self):
         category = baker.make(Category, name='Test Cat', slug='test-cat')
         product = baker.make(
             Product, category=category, name='Test Product',
+            slug='test-product', description='Test Description',
+            image='test_image.jpg', price=10.99, available=True
+        )
+        assert product.name == 'Test Product'
+        assert product.slug == 'test-product'
+        assert product.description == 'Test Description'
+        assert product.image == 'test_image.jpg'
+        assert product.price == 10.99
+        assert product.available is True
+
+    # Tests that a product can be updated
+    def test_update_product(self):
+        category = baker.make(Category, name='Test Cat', slug='test-cat')
+        product = baker.make(
+            Product, id=uuid.UUID('4a2663f3-c227-47e7-bffe-c68a177e7e38'),
+            category=category, name='Test Product',
             slug='test-product', price=10.99
         )
         product.name = 'Updated Product'
         product.save()
-        updated_product = Product.objects.get(id=product.id)
-        assert updated_product.name == 'Updated Product'
+        updated_product = Product.objects.get(
+            id='4a2663f3-c227-47e7-bffe-c68a177e7e38'
+        )
+        assert updated_product == product
 
-    def test_retrieve_product_by_id(self):
+    # Tests that a product can be retrieved
+    def test_retrieve_product(self):
         category = baker.make(Category, name='Test Cat', slug='test-cat')
         product = baker.make(
             Product, category=category, name='Test Product',
-            slug='test-product', price=10.99
+            slug='test-product', price=Decimal(10.99)
         )
         retrieved_product = Product.objects.get(id=product.id)
-        assert retrieved_product.name == 'Test Product'
+        assert retrieved_product == product
 
-    def test_retrieve_product_by_slug(self):
+    # Tests that a product cannot be created with a price value of 0
+    def test_create_product_with_zero_price(self):
         category = baker.make(Category, name='Test Cat', slug='test-cat')
         product = baker.make(
             Product, category=category, name='Test Product',
-            slug='test-product', price=10.99
+            slug='test-product'
         )
-        retrieved_product = Product.objects.get(slug='test-product')
-        assert retrieved_product.name == product.name
+        product.price = Decimal(0.00)
+        msg = "Price [0], must be greater than zero(0)"
+        with self.assertRaisesMessage(ValidationError, msg):
+            product.save()
 
-    def test_create_product_with_non_unique_slug(self):
+    # Test that a product cannot be created with a negative price value
+    def test_create_product_with_negative_price(self):
         category = baker.make(Category, name='Test Cat', slug='test-cat')
-        baker.make(
-            Product, category=category, name='Test Product',
-            slug='test-product', price=10.99
-        )
-
-        assert Product.objects.filter(slug='test-product').exists() is True
-        with pytest.raises(Exception):
+        msg = "Price [-10], must be greater than zero(0)"
+        with self.assertRaisesMessage(ValidationError, msg):
             baker.make(
-                Product, category=category, name='Test Product 2',
-                slug='test-product', price=10.99
+                Product, name='Test Product', slug='test-product',
+                description='This is a test product.',
+                category=category, price=Decimal(-10.00), available=True
             )
 
-    def test_retrieving_nonexistent_product_by_id(self):
-        product_id = uuid.uuid4()
-        product = Product.objects.filter(id=product_id).first()
-        assert product is None
-
-    def test_retrieving_nonexistent_product_by_slug(self):
-        slug = 'nonexistent-slug'
-        product = Product.objects.filter(slug=slug).first()
-        assert product is None
-
-    def test_retrieve_products_in_category(self):
+    # Tests that a product cannot be created with a non-numeric price value
+    def test_create_product_with_non_numeric_price(self):
         category = baker.make(Category, name='Test Cat', slug='test-cat')
-        product1 = baker.make(
-            Product, category=category, name='Product 1', slug='product-1',
-            price=10.99
-        )
-        product2 = baker.make(
-            Product, category=category, name='Product 2', slug='product-2',
-            price=10.99
-        )
-        products = category.products.all()
-        assert len(products) == 2
-        assert product1 in products
-        assert product2 in products
+        with self.assertRaises(Exception):
+            baker.make(
+                Product, category=category, name='Test Product',
+                slug='test-product', price='non-numeric'
+            )
 
-    def test_retrieving_all_available_products(self):
-        category = baker.make(Category, name='Test Cat', slug='test-cat')
-        product1 = baker.make(
-            Product, category=category, name='Product 1', slug='product-1',
-            price=10.00, available=True
+    # Tests that the method returns a valid URL.
+    def test_valid_url_with_name_and_slug(self):
+        product = baker.make(
+            Product, id=uuid.UUID('4a2663f3-c227-47e7-bffe-c68a177e7e38'),
+            name="Test Product", slug="test-product"
         )
-        product2 = baker.make(
-            Product, category=category, name='Product 2', slug='product-2',
-            price=20.00, available=True
-        )
-        product3 = baker.make(
-            Product, category=category, name='Product 3', slug='product-3',
-            price=30.00, available=False
-        )
+        url = product.get_absolute_url()
+        assert url == "/en/4a2663f3-c227-47e7-bffe-c68a177e7e38/test-product/"
 
-        available_products = Product.objects.filter(available=True)
 
-        # Assert that only the available products are retrieved
-        assert len(available_products) == 2
-        assert product1 in available_products
-        assert product2 in available_products
-        assert product3 not in available_products
+class TestCategory(TestCase):
+
+    # Tests that a Category object can be created with required fields
+    def test_category_creation(self):
+        category = baker.make(Category, name="Test Category")
+        assert isinstance(category, Category)
+        assert category.name == "Test Category"
+        assert category.slug is not None
+
+    # Tests that a Category object can be translated to different languages
+    def test_category_translation(self):
+        category = baker.make(Category)
+        translation = category.translations.create(language_code='fr', name='French Category', slug='french-category')
+        assert translation.name == 'French Category'
+        assert translation.slug == 'french-category'
+
+    # Tests that a Category object's slug must be unique
+    def test_category_unique_slug(self):
+        baker.make(Category, name='Unique Slug', slug='unique-slug')
+        with pytest.raises(IntegrityError):
+            baker.make(Category, name='Unique Slug', slug='unique-slug')

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 from decouple import config
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "whitenoise.runserver_nostatic",
     "storages",
+    "rosetta",
+    "parler",
 
     # Local
     "apps.shop.apps.ShopConfig",
@@ -56,6 +59,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -129,7 +133,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
+LANGUAGES = [
+    ("en", _("English")),
+    ("es", _("Spanish")),
+]
+LOCALE_PATHS = [
+    BASE_DIR / "locale",
+]
+
+PARLER_LANGUAGES = {
+    None: (
+        {"code": "en"},
+        {"code": "es"},
+    ),
+    "default": {
+        "fallback": "en",
+        "hide_untranslated": False,
+    }
+}
 
 TIME_ZONE = "Africa/Nairobi"
 
@@ -184,6 +206,8 @@ DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE", default=" ")
 STATICFILES_STORAGE = config("DEFAULT_FILE_STORAGE", default=" ")
 
 # Redis Config
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-REDIS_DB = 1
+REDIS_HOST = config("REDIS_HOST", default=" ")
+REDIS_PORT = config("REDIS_PORT", default=" ")
+REDIS_DB = config("REDIS_DB", default=" ")
+# REDIS_USERNAME = config("REDIS_USERNAME", default=" ")
+# REDIS_PASSWORD = config("REDIS_PASSSWORD", default=" ")

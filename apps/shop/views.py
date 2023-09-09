@@ -12,8 +12,10 @@ def product_list(request, category_slug=None):
 
     # Fetch products per category
     if category_slug:
+        language = request.LANGUAGE_CODE
         category = get_object_or_404(
-            Category, slug=category_slug
+            Category, translations__language_code=language,
+            translations__slug=category_slug
         )
         products = products.filter(category=category)
 
@@ -26,8 +28,11 @@ def product_list(request, category_slug=None):
 
 
 def product_detail(request, id, slug):
+    language = request.LANGUAGE_CODE
     product = get_object_or_404(
-        Product, id=id, slug=slug, available=True
+        Product, id=id, translations__slug=slug,
+        translations__language_code=language,
+        available=True
     )
     cart_product_form = CartAddProductForm()
     r = Recommender()
