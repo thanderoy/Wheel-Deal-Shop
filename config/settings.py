@@ -28,7 +28,7 @@ SECRET_KEY = config("SECRET_KEY", default=" ")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=" ", cast=lambda var: [str.strip() for str in var.split(',')])   # noqa
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default=" ", cast=lambda var: var.split(','))   # noqa
 
 # Application definition
 
@@ -190,7 +190,7 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 STRIPE_API_VERSION = config('STRIPE_API_VERSION', default='')
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
 
-CORS_ALLOWED_ORIGINS = config("ALLOWED_ORIGINS", default=" ",  cast=lambda var: [str.strip() for str in var.split(',')])   # noqa
+CORS_ALLOWED_ORIGINS = config("ALLOWED_ORIGINS", default=" ",  cast=lambda var: var.split(','))   # noqa
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
