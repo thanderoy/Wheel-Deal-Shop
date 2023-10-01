@@ -1,6 +1,7 @@
+from unittest.mock import Mock, patch
+
 from django.test import TestCase
 from model_bakery import baker
-from unittest.mock import patch, Mock, call
 
 from apps.shop.models import Product
 from apps.shop.recommender import Recommender
@@ -24,7 +25,7 @@ class RecommenderTestCase(TestCase):
 
     def test_get_product_key(self):
         product_id = '4a2663f3-c227-47e7-bffe-c68a177e7e38'
-        expected_key = 'product:4a2663f3-c227-47e7-bffe-c68a177e7e38:purchased_with'
+        expected_key = 'product:4a2663f3-c227-47e7-bffe-c68a177e7e38:purchased_with'    # noqa
         self.assertEqual(
             self.recommender.get_product_key(product_id), expected_key
         )

@@ -1,0 +1,28 @@
+services:
+  django:
+    build: .
+    container_name: wheel-deal-shop-app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+  
+    depends_on:
+      - redis
+      - celery
+
+  celery:
+    build: .
+    container_name: wheel-deal-shop-celery
+    command: celery -A config worker -l INFO
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  redis:
+    image: "redis:alpine"
+    container_name: wheel-deal-shop-redis
+    expose:
+      - 6379
