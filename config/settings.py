@@ -210,8 +210,8 @@ CELERY_BROKER_URL = config("CELERY_BROKER", default="redis://redis:6379/0")
 CELERY_RESULT_BACKEND = config("CELERY_BACKEND", default="redis://redis:6379/0")
 
 # Redis Config
-REDIS_HOST = config("REDIS_HOST", default=" ")
-REDIS_PORT = config("REDIS_PORT", default=" ")
-REDIS_DB = config("REDIS_DB", default=" ")
+REDIS_HOST = config("REDIS_HOST", default="redis")
+REDIS_PORT = config("REDIS_PORT", default="6379")
+REDIS_DB = config("REDIS_DB", default="1")
 REDIS_USER = config("REDIS_USER", default=" ")
 REDIS_PASSWORD = config("REDIS_PASSSWORD", default=" ")
