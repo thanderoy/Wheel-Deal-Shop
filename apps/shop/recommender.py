@@ -14,8 +14,8 @@ class Recommender:
             host=settings.REDIS_HOST,
             port=settings.REDIS_PORT,
             db=settings.REDIS_DB,
-            # username=settings.REDIS_USER,
-            # password=settings.REDIS_PASSWORD
+            username=settings.REDIS_USER,
+            password=settings.REDIS_PASSWORD
         )
 
     def get_product_key(self, id: str):
