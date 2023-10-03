@@ -4,6 +4,7 @@ import stripe
 from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from apps.orders.models import Order
 
@@ -12,6 +13,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = settings.STRIPE_API_VERSION
 
 
+@csrf_exempt
 def payment_process(request):
     order_no = request.session.get('order_no', None)
     order = get_object_or_404(Order, order_no=order_no)
