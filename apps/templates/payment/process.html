@@ -40,7 +40,6 @@
         </div>
     </div>
     <form action="{% url 'payment:process' %}" method="POST">
-        {% csrf_token %}
         <input type="submit" value="Pay Now">
     </form>
 {% endblock content %}
